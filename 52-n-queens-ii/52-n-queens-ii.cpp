@@ -1,51 +1,32 @@
 class Solution {
-private:
-    int ans;
-    
-    void totalNQueensHelper(vector<string> &board, int row, int n) {
+private:    
+    int totalNQueensHelper(vector<int> &up, vector<int> &upLeftDiagonal, vector<int> &upRightDiagonal, int row, int n) {
         if(row == n) {
-            ans++;
-            return;
+            return 1;
         }
+                
+        int cnt = 0;
         
         for(int col = 0; col < n; col++) {
-            if(isPossible(board, row, col, n)) {
-                board[row][col] = 'Q';
-                totalNQueensHelper(board, row + 1, n);
-                board[row][col] = '.';
+            if(up[col] == 0 && upLeftDiagonal[n - 1 - (col - row)] == 0 && upRightDiagonal[row + col] == 0) {
+                up[col] = 1;
+                upLeftDiagonal[n - 1 - (col - row)] = 1;
+                upRightDiagonal[row + col] = 1;
+                
+                cnt += totalNQueensHelper(up, upLeftDiagonal, upRightDiagonal, row + 1, n);
+                
+                up[col] = 0;
+                upLeftDiagonal[n - 1 - (col - row)] = 0;
+                upRightDiagonal[row + col] = 0;
             }
         }
-    }
-    
-    bool isPossible(vector<string> &board, int row, int col, int n) {
-        int r = row, c = col;
         
-        while(row >= 0) { // check above
-            if(board[row][col] == 'Q') return false;
-            row--;
-        }
-        
-        row = r;
-        while(row >= 0 && col >= 0) { // check upper left diagonal
-            if(board[row][col] == 'Q') return false;
-            row--, col--;
-        }
-        
-        row = r, col = c;
-        while(row >= 0 && col < n) { // check upper right diagonal
-            if(board[row][col] == 'Q') return false;
-            row--, col++;
-        }
-        
-        return true;
+        return cnt;
     }
     
 public:
     int totalNQueens(int n) {
-        ans = 0;
-        vector<string> board;
-        for(int i = 0; i < n; i++) board.push_back(string(n, '.'));
-        totalNQueensHelper(board, 0, n);
-        return ans;
+        vector<int> up(n, 0), upLeftDiagonal(2 * n - 1, 0), upRightDiagonal(2 * n - 1, 0);
+        return totalNQueensHelper(up, upLeftDiagonal, upRightDiagonal, 0, n);
     }
 };
