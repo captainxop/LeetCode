@@ -16,10 +16,10 @@ private:
             return;
         }
         
-        count = count ^ (1 << root->val);
+        count = count ^ (1 << root->val); // toggle the bit
         
         if(root->left == NULL && root->right == NULL) {
-            if((count & (count - 1)) == 0) {
+            if((count & (count - 1)) == 0) { // to check atmoset 1 bit is set (power of 2)
                 ans++;
             }
         }
