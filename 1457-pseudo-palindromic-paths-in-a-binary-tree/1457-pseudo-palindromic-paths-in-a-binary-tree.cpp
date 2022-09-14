@@ -11,32 +11,27 @@
  */
 class Solution {
 private:
-    void countPseudoPalindromicPaths(TreeNode *root, vector<int> &cnt, int &ans) {
+    void countPseudoPalindromicPaths(TreeNode *root, int count, int &ans) {
         if(root == NULL) {
             return;
         }
         
-        cnt[root->val]++;
-        countPseudoPalindromicPaths(root->left, cnt, ans);
-        countPseudoPalindromicPaths(root->right, cnt, ans);
+        count = count ^ (1 << root->val);
         
         if(root->left == NULL && root->right == NULL) {
-            int oddCount = 0;
-            for(int i = 1; i <= 9; i++) {
-                oddCount += (cnt[i] % 2);
+            if((count & (count - 1)) == 0) {
+                ans++;
             }
-            
-            if(oddCount < 2) ans++;
         }
         
-        cnt[root->val]--;
+        countPseudoPalindromicPaths(root->left, count, ans);
+        countPseudoPalindromicPaths(root->right, count, ans);
     }
     
 public:
     int pseudoPalindromicPaths (TreeNode* root) {
         int ans = 0;
-        vector<int> cnt(10, 0);
-        countPseudoPalindromicPaths(root, cnt, ans);
+        countPseudoPalindromicPaths(root, 0, ans);
         return ans;
     }
 };
